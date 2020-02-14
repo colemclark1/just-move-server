@@ -13,24 +13,36 @@ app.use(function(req, res, next) {
   next();
 })
 
-var connection = require('./db-queries/connect');
-var db = new connection.Database
+var db = require('./config/database');
+
+db.authenticate().then(() => console.log("Database Connected...")).catch(err => console.log("Error: " + err));
 
 
-app.get('/exercises', function(req, res) {
-  db.getExercises().then(result => res.send(result))
-})
+app.use('/equipment', require('./routes/equipment'));
+app.use('/exercise', require('./routes/exercise'));
 
-app.get("/hello", function(req, res) {
-  res.send({message: "Hello"});
-})
-
-app.get('/login/:username/:password', function(req, res){
-  const username = req.params['username'];
-  const password = req.params['password'];
-  res.send({username: username,
-            password: password
-          });
-})
+// var db = new connection.Database
+//
+//
+// app.get('/exercises', function(req, res) {
+//   db.getExercises().then(result => res.send(result))
+// })
+//
+// app.get("/hello", function(req, res) {
+//   res.send({message: "Hello"});
+// })
+//
+// app.get('/login/:username/:password', function(req, res){
+//   const username = req.params['username'];
+//   const password = req.params['password'];
+//   res.send({username: username,
+//             password: password
+//           });
+// })
+//
+//
+// app.get('/workouts', function(req, res) {
+//   db.getWorkouts().then(result => res.send(result))
+// })
 
 app.listen(4000)
